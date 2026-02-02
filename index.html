@@ -10,11 +10,14 @@
 
   <style>
     :root {
-      --bg1: #ffd6e7;
-      --bg2: #ffeef6;
-      --card: #ffffffcc;
-      --yes: #ff3b7a;
-      --yesHover: #ff1f68;
+      --bg-overlay-top: rgba(0,0,0,0.18);
+      --bg-overlay-bottom: rgba(0,0,0,0.42);
+      --card: rgba(0,0,0,0.56);
+      --text: #ffffff;
+      --muted: rgba(255,255,255,0.85);
+      --yes-start: #ff4d7d;
+      --yes-end: #ff1f68;
+      --no-bg: rgba(255,255,255,0.08);
     }
 
     * { box-sizing: border-box; }
@@ -24,10 +27,14 @@
       min-height: 100svh;
       display: grid;
       place-items: center;
-      background: radial-gradient(circle at top, var(--bg2), var(--bg1));
-      font-family: system-ui, sans-serif;
+      /* Background image: replace 'assets/background.jpg' with your image path if different */
+      background:
+        linear-gradient(180deg, var(--bg-overlay-top), var(--bg-overlay-bottom)),
+        url('assets/background.jpg') center/cover fixed no-repeat;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       overflow: hidden;
       padding: 16px;
+      color: var(--text);
     }
 
     /* FULL-SCREEN CONFETTI CANVAS */
@@ -44,22 +51,25 @@
       width: min(720px, 92vw);
       padding: 26px 22px;
       background: var(--card);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(6px) saturate(1.1);
       border-radius: 22px;
       text-align: center;
-      box-shadow: 0 18px 60px rgba(0,0,0,.15);
+      box-shadow: 0 18px 60px rgba(0,0,0,.45);
+      color: var(--text);
     }
 
     .art {
       width: min(260px, 80vw);
       margin: 0 auto 10px;
       display: block;
-      filter: drop-shadow(0 10px 14px rgba(0,0,0,.12));
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.45)) brightness(1.02);
     }
 
     h1 {
       font-size: clamp(26px, 4vw, 44px);
       margin: 12px 0 18px;
+      color: var(--text);
+      text-shadow: 0 4px 18px rgba(0,0,0,.55);
     }
 
     .button-zone {
@@ -80,51 +90,73 @@
       border-radius: 999px;
       border: none;
       cursor: pointer;
-      box-shadow: 0 10px 24px rgba(0,0,0,.14);
+      box-shadow: 0 10px 24px rgba(0,0,0,.35);
       user-select: none;
       -webkit-tap-highlight-color: transparent;
-      transition: transform .12s ease, background .12s ease;
+      transition: transform .12s ease, background .12s ease, box-shadow .12s ease;
+      color: var(--text);
     }
 
     #yesBtn {
       left: 18%;
-      background: var(--yes);
+      background: linear-gradient(90deg, var(--yes-start), var(--yes-end));
       color: #fff;
+      text-shadow: 0 2px 6px rgba(0,0,0,.2);
     }
-    #yesBtn:hover { background: var(--yesHover); }
+    #yesBtn:hover {
+      transform: translateY(-50%) scale(1.03);
+      box-shadow: 0 16px 36px rgba(255, 40, 110, .18);
+    }
 
     #noBtn {
       left: 62%;
-      background: #e5e7eb;
-      color: #111827;
+      background: var(--no-bg);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    #noBtn:hover {
+      transform: translateY(-50%) scale(1.03);
+      background: rgba(255,255,255,0.12);
     }
 
     .hint {
       margin-top: 10px;
       font-size: 13px;
-      opacity: .7;
+      color: var(--muted);
+      opacity: .95;
     }
 
     .result {
       display: none;
       margin-top: 18px;
       animation: pop .35s ease;
+      color: var(--text);
     }
 
     .result h2 {
       font-size: clamp(30px, 4.5vw, 46px);
       margin: 10px 0;
+      color: var(--text);
+      text-shadow: 0 6px 22px rgba(0,0,0,.55);
     }
 
     .fireworks {
       width: min(380px, 90vw);
       margin: 0 auto;
       display: block;
+      border-radius: 12px;
+      box-shadow: 0 14px 40px rgba(0,0,0,.45);
     }
 
     @keyframes pop {
       from { transform: scale(.96); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
+    }
+
+    /* small responsive tweaks to ensure buttons stay visible */
+    @media (max-width: 420px) {
+      .button-zone { height: 180px; }
+      #yesBtn, #noBtn { padding: 12px 18px; font-size: 16px; }
     }
   </style>
 </head>
@@ -134,7 +166,7 @@
 
   <main class="card">
     <!-- ANIMAL WITH HEART -->
-    <svg class="art" viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg">
+    <svg class="art" viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
       <defs>
         <linearGradient id="fur" x1="0" x2="1">
           <stop offset="0" stop-color="#f7c7a1"/>
@@ -161,8 +193,8 @@
       <path d="M110 92 L95 55 L140 78 Z" fill="#f2a97b"/>
       <path d="M270 92 L285 55 L240 78 Z" fill="#f2a97b"/>
 
-      <circle cx="160" cy="130" r="8"/>
-      <circle cx="220" cy="130" r="8"/>
+      <circle cx="160" cy="130" r="8" fill="#111"/>
+      <circle cx="220" cy="130" r="8" fill="#111"/>
 
       <path d="M190 144 C186 144 182 148 182 152
                C182 160 190 164 190 170
@@ -300,5 +332,3 @@
   </script>
 </body>
 </html>
-
-
